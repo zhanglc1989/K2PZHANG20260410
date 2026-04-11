@@ -1,22 +1,23 @@
-From: OpenWrt Custom
-Date: Now
-Subject: add ZHANG_ROUTER MT7621 device
+From: ZHANG
+Date: 2025-01-01
+Subject: ramips: mt7621 add ZHANG ROUTER device
 
 --- /dev/null
 +++ b/target/linux/ramips/dts/mt7621_zhang_router.dts
-@@ -0,0 +1,128 @@
+@@ -0,0 +1,158 @@
 +#include "mt7621.dtsi"
++
 +#include <dt-bindings/gpio/gpio.h>
 +#include <dt-bindings/input/input.h>
-
++
 +/ {
 +	model = "ZHANG ROUTER";
 +	compatible = "zhang,router", "mediatek,mt7621-soc";
-
++
 +	chosen {
 +		bootargs = "console=ttyS0,115200";
 +	};
-
++
 +	aliases {
 +		led-boot = &led_gpio7;
 +		led-failsafe = &led_gpio7;
@@ -24,27 +25,27 @@ Subject: add ZHANG_ROUTER MT7621 device
 +		led-upgrade = &led_gpio7;
 +	};
 +};
-
++
 +&state_default {
 +	gpio {
 +		groups = "gpio";
 +		function = "gpio";
 +	};
 +};
-
++
 +&gpio-leds {
 +	compatible = "gpio-leds";
-
++
 +	led_gpio7: gpio7 {
 +		label = "gpio7";
 +		gpios = <&gpio 7 GPIO_ACTIVE_HIGH>;
 +		default-state = "off";
 +	};
 +};
-
++
 +&gpio-keys {
 +	compatible = "gpio-keys";
-
++
 +	reset {
 +		label = "reset";
 +		gpios = <&gpio 16 GPIO_ACTIVE_LOW>;
@@ -52,14 +53,14 @@ Subject: add ZHANG_ROUTER MT7621 device
 +		debounce-interval = <60>;
 +		wakeup-source;
 +	};
-
++
 +	wps {
 +		label = "wps";
 +		gpios = <&gpio 12 GPIO_ACTIVE_LOW>;
 +		linux,code = <KEY_WPS_BUTTON>;
 +		debounce-interval = <60>;
 +	};
-
++
 +	rfkill {
 +		label = "rfkill";
 +		gpios = <&gpio 14 GPIO_ACTIVE_LOW>;
@@ -67,19 +68,19 @@ Subject: add ZHANG_ROUTER MT7621 device
 +		debounce-interval = <60>;
 +	};
 +};
-
++
 +&pcie {
 +	status = "okay";
 +};
-
++
 +&pcie0 {
 +	status = "okay";
 +};
-
++
 +&pcie1 {
 +	status = "okay";
 +};
-
++
 +/* WiFi 设备（通用写法，不绑定错误 reg） */
 +&pcie0 {
 +	mediatek,mt76@0,0 {
@@ -87,21 +88,21 @@ Subject: add ZHANG_ROUTER MT7621 device
 +		mediatek,mtd-eeprom = <&factory 0x0000>;
 +	};
 +};
-
++
 +&pcie1 {
 +	mediatek,mt76@0,0 {
 +		reg = <0x0000 0 0 0 0>;
 +		mediatek,mtd-eeprom = <&factory 0x8000>;
 +	};
 +};
-
++
 +&gmac0 {
 +	status = "okay";
 +};
-
++
 +&switch0 {
 +	status = "okay";
-
++
 +	ports {
 +		port@0 { label = "wan"; };
 +		port@1 { label = "lan1"; };
@@ -110,45 +111,45 @@ Subject: add ZHANG_ROUTER MT7621 device
 +		port@4 { label = "lan4"; };
 +	};
 +};
-
++
 +&nand {
 +	status = "disabled";
 +};
-
++
 +/* ❌ 删除 gnss（关键修复点） */
 +/* &gnss { status = "disabled"; }; */
-
++
 +&spi0 {
 +	status = "okay";
-
++
 +	flash@0 {
 +		compatible = "jedec,spi-nor";
 +		reg = <0>;
 +		spi-max-frequency = <10000000>;
-
++
 +		partitions {
 +			compatible = "fixed-partitions";
 +			#address-cells = <1>;
 +			#size-cells = <1>;
-
++
 +			partition@0 {
 +				label = "u-boot";
 +				reg = <0x0 0x30000>;
 +				read-only;
 +			};
-
++
 +			partition@30000 {
 +				label = "u-boot-env";
 +				reg = <0x30000 0x10000>;
 +				read-only;
 +			};
-
++
 +			factory: partition@40000 {
 +				label = "factory";
 +				reg = <0x40000 0x10000>;
 +				read-only;
 +			};
-
++
 +			partition@50000 {
 +				label = "firmware";
 +				reg = <0x50000 0xfb0000>;
@@ -156,13 +157,13 @@ Subject: add ZHANG_ROUTER MT7621 device
 +		};
 +	};
 +};
-
++
 +&uart0 {
 +	status = "okay";
 +};
 --- a/target/linux/ramips/image/mt7621.mk
 +++ b/target/linux/ramips/image/mt7621.mk
-@@ -1,3 +1,14 @@
+@@ -4,0 +4,13 @@
 +define Device/zhang_router
 +  DEVICE_DTS := mt7621_zhang_router
 +  DEVICE_VENDOR := ZHANG
@@ -175,7 +176,3 @@ Subject: add ZHANG_ROUTER MT7621 device
 +  DEVICE_PACKAGES := kmod-mt7621
 +endef
 +TARGET_DEVICES += zhang_router
-+
- define Device/adslr_g7
-   DEVICE_DTS := mt7621_adslr_g7
-   DEVICE_VENDOR := ADSLR
