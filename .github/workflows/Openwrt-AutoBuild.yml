@@ -192,9 +192,6 @@ jobs:
           /bin/bash "devices/${{matrix.target}}/$DIY_SH"
         fi
         cp -Rf ./diy/* ./ || true
-    - name: SSH connection to Actions
-      uses: kiddin9/debugger-action@master
-      if: contains(github.event.action, 'ssh')
 
     - name: Apply patches
       run: |
@@ -206,34 +203,9 @@ jobs:
           find "devices/${{matrix.target}}/patches" -maxdepth 1 -type f -name '*.revert.patch' -print0 | sort -z | xargs -I % -t -0 -n 1 sh -c "patch -d './' -R --no-backup-if-mismatch -p1 -F 1 --ignore-whitespace -i '%'"
           find "devices/${{matrix.target}}/patches" -maxdepth 1 -type f -name '*.patch' ! -name '*.revert.patch' ! -name '*.bin.patch' -print0 | sort -z | xargs -I % -t -0 -n 1 sh -c "patch -d './' --no-backup-if-mismatch -p1 -F 1 --ignore-whitespace -i '%'"
 
-    - name: Replace custom K2P DTS
-      if: matrix.target == 'ramips_mt7621'
-      run: |
-        test -f "$GITHUB_WORKSPACE/mt7621_phicomm_k2p.dts"
-        cp -f "$GITHUB_WORKSPACE/mt7621_phicomm_k2p.dts" \
-          "$GITHUB_WORKSPACE/openwrt/target/linux/ramips/dts/mt7621_phicomm_k2p.dts"
-        ls -l "$GITHUB_WORKSPACE/openwrt/target/linux/ramips/dts/mt7621_phicomm_k2p.dts"
-        cat $GITHUB_WORKSPACE/openwrt/target/linux/ramips/dts/mt7621_phicomm_k2p.dts
-
     - name: Defconfig
       run: |
         cd openwrt
-        if [[ "${{matrix.target}}" == "ramips_mt7621" ]]; then
-          printf '%s\n' \
-            '# CONFIG_TARGET_MULTI_PROFILE is not set' \
-            '# CONFIG_TARGET_ALL_PROFILES is not set' \
-            'CONFIG_TARGET_DEVICE_ramips_mt7621_DEVICE_phicomm_k2p=y' \
-            '# CONFIG_TARGET_DEVICE_ramips_mt7621_DEVICE_phicomm_k2p-32m is not set' \
-            'CONFIG_PACKAGE_kmod-mt7663-firmware-ap=y' \
-            'CONFIG_PACKAGE_kmod-mt7663-firmware-sta=y' \
-            'CONFIG_PACKAGE_kmod-mt7603=y' \
-            > .config.k2p-fragment
-          sed -n '1,20p' .config.k2p-fragment
-          ./scripts/kconfig.pl + .config .config.k2p-fragment > .config.tmp
-          grep -E 'TARGET_MULTI_PROFILE|TARGET_ALL_PROFILES|TARGET_DEVICE_ramips_mt7621_DEVICE_phicomm_k2p|CONFIG_PACKAGE_kmod-mt7663-firmware|CONFIG_PACKAGE_kmod-mt7603' .config.tmp || true
-          mv .config.tmp .config
-          rm -f .config.k2p-fragment
-        fi
         make defconfig
         if [[ ! "${{matrix.target}}" =~ (amlogic_meson8b|armsr_armv8|bcm27xx_*|rockchip_armv8|sunxi_*|x86_*|siflower_*) ]]; then
         sed -n '/# Wireless Drivers/,/# end of Wireless Drivers/p' .config | sed -e 's/=m/=n/' >>.config
@@ -274,13 +246,8 @@ jobs:
         cd openwrt/bin/targets/*/*/
         cp $GITHUB_WORKSPACE/openwrt/.config ${{matrix.target}}.config || true
         cp $GITHUB_WORKSPACE/openwrt/build_dir/target-*/linux-*/linux-*/.config ${{matrix.target}}_kernel.config || true
-        mkdir -p "$GITHUB_WORKSPACE/upload_firmware"
-        rm -rf "$GITHUB_WORKSPACE/upload_firmware"/*
-        #find "$PWD" -maxdepth 1 -type f -name '*phicomm_k2p*.bin' ! -name '*phicomm_k2p-32m*.bin' -exec cp -f {} "$GITHUB_WORKSPACE/upload_firmware/" \;
-        find "$GITHUB_WORKSPACE/upload_firmware" -maxdepth 1 -type f -name '*.bin' -print
         Emoji=("🎉" "🤞" "✨" "🎁" "🎈" "🎄" "🎨" "💋" "🍓" "🍕" "🍉" "💐" "🌴" "🚀" "🛸" "🗽" "⛅" "🌈" "🔥" "⛄" "🐶" "🏅" "🦄" "🐤")
         echo "EMOJI=${Emoji[$[$RANDOM % ${#Emoji[@]}]]}" >> $GITHUB_ENV
-        echo "FIRMWARE=$GITHUB_WORKSPACE/upload_firmware" >> $GITHUB_ENV
 
     - name: Deploy imagebuilder to server
       uses: easingthemes/ssh-deploy@main
@@ -301,8 +268,7 @@ jobs:
       with:
         name: ${{ env.VERSION }}_${{matrix.target}}
         path: |
-          upload_firmware/
-        if-no-files-found: error
+          openwrt/bin/targets/
 
     - name: Create release
       id: create_release
@@ -322,7 +288,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN_KIDDIN9 }}
       with:
-        files: "upload_firmware/*"
+        files: "${{ env.FIRMWARE }}/*"
         name: ${{ env.date2 }} ${{matrix.target}} ${{ env.EMOJI }}
         tag_name: ${{ env.date }}_${{matrix.target}}
         body_path: release.txt

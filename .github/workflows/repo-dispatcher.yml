@@ -69,4 +69,3 @@ jobs:
           -H "Accept: application/vnd.github.everest-preview+json" \
           -H "Authorization: token ${{ secrets.TOKEN_KIDDIN9 }}" \
           -d '{"event_type": "ramips_mt7621 ${{ github.event.inputs.param }}", "client_payload": {"target": "ramips_mt7621"}}'
-         
