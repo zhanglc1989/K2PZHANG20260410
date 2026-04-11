@@ -1,10 +1,6 @@
-From: ZHANG
-Date: 2025-01-01
-Subject: ramips: mt7621 add ZHANG ROUTER device
-
 --- /dev/null
 +++ b/target/linux/ramips/dts/mt7621_zhang_router.dts
-@@ -0,0 +1,158 @@
+@@ -0,0 +1,156 @@
 +#include "mt7621.dtsi"
 +
 +#include <dt-bindings/gpio/gpio.h>
@@ -81,7 +77,6 @@ Subject: ramips: mt7621 add ZHANG ROUTER device
 +	status = "okay";
 +};
 +
-+/* WiFi 设备（通用写法，不绑定错误 reg） */
 +&pcie0 {
 +	mediatek,mt76@0,0 {
 +		reg = <0x0000 0 0 0 0>;
@@ -115,9 +110,6 @@ Subject: ramips: mt7621 add ZHANG ROUTER device
 +&nand {
 +	status = "disabled";
 +};
-+
-+/* ❌ 删除 gnss（关键修复点） */
-+/* &gnss { status = "disabled"; }; */
 +
 +&spi0 {
 +	status = "okay";
@@ -163,7 +155,10 @@ Subject: ramips: mt7621 add ZHANG ROUTER device
 +};
 --- a/target/linux/ramips/image/mt7621.mk
 +++ b/target/linux/ramips/image/mt7621.mk
-@@ -4,0 +4,13 @@
+@@ -3,3 +3,13 @@
+ include ./common-sercomm.mk
+ include ./common-tp-link.mk
+ 
 +define Device/zhang_router
 +  DEVICE_DTS := mt7621_zhang_router
 +  DEVICE_VENDOR := ZHANG
