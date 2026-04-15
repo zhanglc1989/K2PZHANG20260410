@@ -230,9 +230,7 @@ Subject: add ZHANG_ROUTER MT7621 device
 --- a/target/linux/ramips/image/mt7621.mk
 +++ b/target/linux/ramips/image/mt7621.mk
 @@ -4000,0 +4000,13 @@
- include ./common-sercomm.mk
- include ./common-tp-link.mk
- 
+
 +define Device/zhang_router
 +  DEVICE_DTS := mt7621_zhang_router
 +  DEVICE_VENDOR := ZHANG
