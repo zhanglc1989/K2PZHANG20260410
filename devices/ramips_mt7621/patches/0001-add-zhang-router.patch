@@ -229,7 +229,7 @@ Subject: add ZHANG_ROUTER MT7621 device
 +
 --- a/target/linux/ramips/image/mt7621.mk
 +++ b/target/linux/ramips/image/mt7621.mk
-@@ -3,3 +3,13 @@
+@@ -4000,0 +4000,13 @@
  include ./common-sercomm.mk
  include ./common-tp-link.mk
  
