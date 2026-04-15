@@ -246,7 +246,6 @@ jobs:
         cd openwrt/bin/targets/*/*/
         cp $GITHUB_WORKSPACE/openwrt/.config ${{matrix.target}}.config || true
         cp $GITHUB_WORKSPACE/openwrt/build_dir/target-*/linux-*/linux-*/.config ${{matrix.target}}_kernel.config || true
-        rm -rf !(*.config|*.bin|*.buildinfo)
         Emoji=("🎉" "🤞" "✨" "🎁" "🎈" "🎄" "🎨" "💋" "🍓" "🍕" "🍉" "💐" "🌴" "🚀" "🛸" "🗽" "⛅" "🌈" "🔥" "⛄" "🐶" "🏅" "🦄" "🐤")
         echo "EMOJI=${Emoji[$[$RANDOM % ${#Emoji[@]}]]}" >> $GITHUB_ENV
 
@@ -270,17 +269,7 @@ jobs:
         name: ${{ env.VERSION }}_${{matrix.target}}
         path: |
           openwrt/bin/targets/
-          
-          
-    - name: Upload firmware for artifact
-      uses: actions/upload-artifact@main
-      if: env.UPLOAD_FIRMWARE_FOR_ARTIFACT == 'true'
-      with:
-        name: ${{ env.VERSION }}_${{matrix.target}_copy}
-        path: |
-          openwrt/bin/targets/
-          
-          
+
     - name: Create release
       id: create_release
       if: env.REPO_TOKEN && env.UPLOAD_FIRMWARE_FOR_RELEASE == 'true'
@@ -304,6 +293,26 @@ jobs:
         tag_name: ${{ env.date }}_${{matrix.target}}
         body_path: release.txt
     
+    - name: Organize files easy
+      id: organize
+      continue-on-error: true
+      run: |
+        shopt -s extglob
+        cd openwrt/bin/targets/*/*/
+        rm -rf ./*/
+        Emoji=("🎉" "🤞" "✨" "🎁" "🎈" "🎄" "🎨" "💋" "🍓" "🍕" "🍉" "💐" "🌴" "🚀" "🛸" "🗽" "⛅" "🌈" "🔥" "⛄" "🐶" "🏅" "🦄" "🐤")
+        echo "EMOJI=${Emoji[$[$RANDOM % ${#Emoji[@]}]]}" >> $GITHUB_ENV
+
+
+    - name: Upload firmware for artifact
+      uses: actions/upload-artifact@main
+      if: env.UPLOAD_FIRMWARE_FOR_ARTIFACT == 'true'
+      with:
+        name: ${{ env.VERSION }}_${{matrix.target}}_ONLY_BIN
+        path: |
+          openwrt/bin/targets/
+
+
     - name: WeChat notification
       continue-on-error: true
       if: env.SCKEY
