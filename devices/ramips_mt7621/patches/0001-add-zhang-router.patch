@@ -1,7 +1,6 @@
 From: OpenWrt Custom
 Date: Now
 Subject: add ZHANG_ROUTER MT7621 device
-
 --- /dev/null
 +++ b/target/linux/ramips/dts/mt7621_zhang_router.dts
 @@ -0,0 +1,222 @@
@@ -230,7 +229,6 @@ Subject: add ZHANG_ROUTER MT7621 device
 --- a/target/linux/ramips/image/mt7621.mk
 +++ b/target/linux/ramips/image/mt7621.mk
 @@ -4000,0 +4000,13 @@
-
 +define Device/zhang_router
 +  DEVICE_DTS := mt7621_zhang_router
 +  DEVICE_VENDOR := ZHANG
@@ -243,3 +241,4 @@ Subject: add ZHANG_ROUTER MT7621 device
 +  DEVICE_PACKAGES := kmod-mt7621
 +endef
 +TARGET_DEVICES += zhang_router
++
