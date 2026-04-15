@@ -1,6 +1,7 @@
 From: OpenWrt Custom
 Date: Now
 Subject: add ZHANG_ROUTER MT7621 device
+
 --- /dev/null
 +++ b/target/linux/ramips/dts/mt7621_zhang_router.dts
 @@ -0,0 +1,222 @@
@@ -166,32 +167,6 @@ Subject: add ZHANG_ROUTER MT7621 device
 +	};
 +};
 +
-+/*
-+&switch0 {
-+	ports {
-+		port@0 {
-+			status = "disabled";	
-+		};
-+		port@1 {
-+			status = "disabled";
-+		};
-+		port@2 {
-+			status = "okay";
-+			label = "lan2";
-+		};
-+
-+		port@3 {
-+			status = "okay";
-+			label = "lan1";
-+		};
-+		port@4 {
-+			status = "okay";
-+			label = "wan";
-+		};		
-+	};
-+};*/
-+/*小米4A直刷bread  用K2P 调整端口可用，默认编译只支持原生UBOOT*/
-+
 +&gpio {
 +	gpio7_default_low {
 +		gpio-hog;
@@ -241,4 +216,3 @@ Subject: add ZHANG_ROUTER MT7621 device
 +  DEVICE_PACKAGES := kmod-mt7621
 +endef
 +TARGET_DEVICES += zhang_router
-+
