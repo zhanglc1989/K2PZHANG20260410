@@ -138,6 +138,6 @@ diff --git a/target/linux/ramips/image/mt7621.mk b/target/linux/ramips/image/mt7
 +  IMAGE_SIZE := 16064k
 +  DEVICE_VENDOR := ZHANG
 +  DEVICE_MODEL := ROUTER
-+  DEVICE_PACKAGES := kmod-mt7603 kmod-mt76x2 -uboot-envtools
++  DEVICE_PACKAGES := kmod-mt7603 kmod-mt7615e kmod-mt7663-firmware-ap -uboot-envtools
 +endef
 +TARGET_DEVICES += zhang_router
