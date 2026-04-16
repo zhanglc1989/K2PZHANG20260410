@@ -1,10 +1,11 @@
 From: OpenWrt Custom
 Date: Now
 Subject: add ZHANG_ROUTER MT7621 device
-
+diff --git a/target/linux/ramips/dts/mt7621_zhang_router.dts b/target/linux/ramips/dts/mt7621_zhang_router.dts
+new file mode 100644
 --- /dev/null
 +++ b/target/linux/ramips/dts/mt7621_zhang_router.dts
-@@ -0,0 +1,118 @@
+@@ -0,0 +1,121 @@
 +#include "mt7621.dtsi"
 +
 +#include <dt-bindings/gpio/gpio.h>
@@ -126,9 +127,10 @@ Subject: add ZHANG_ROUTER MT7621 device
 +};
 +
 +&uart0 { status = "okay"; };
+diff --git a/target/linux/ramips/image/mt7621.mk b/target/linux/ramips/image/mt7621.mk
 --- a/target/linux/ramips/image/mt7621.mk
 +++ b/target/linux/ramips/image/mt7621.mk
-@@ -0,0 +1,14 @@
+@@ -0,0 +1,13 @@
 +define Device/zhang_router
 +  DEVICE_DTS := mt7621_zhang_router
 +  DEVICE_VENDOR := ZHANG
