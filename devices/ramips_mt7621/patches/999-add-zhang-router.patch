@@ -239,7 +239,7 @@ diff --git a/target/linux/ramips/image/mt7621.mk b/target/linux/ramips/image/mt7
 +TARGET_DEVICES += zhang_router
 --- /dev/null
 +++ b/package/base-files/files/etc/hotplug.d/button/99-my-gpio-logic
-@@ -0,0 +1,31 @@
+@@ -0,0 +1,32 @@
 +#!/bin/sh
 +
 +# 只有在按下时触发逻辑
@@ -269,6 +269,7 @@ diff --git a/target/linux/ramips/image/mt7621.mk b/target/linux/ramips/image/mt7
 +        # 打印信息到系统日志 (使用 logread 查看)
 +        logger -t "GPIO_TASK" "helloworld - 已按压次数: $COUNT"
 +        echo "helloworld - 已按压次数: $COUNT" > /dev/console
++        echo "GPIO14按键联动，具体场景后续自行发挥 - 已按压次数: $COUNT"   > /dev/pts/0
 +        ;;
 +esac
 
